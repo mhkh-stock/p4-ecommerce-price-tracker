@@ -1,0 +1,3 @@
+# Scraper: Python 3 standard library only (urllib + html.parser).
+# Excel builder only:
+openpyxl>=3.1
