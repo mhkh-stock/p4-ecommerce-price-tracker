@@ -2,13 +2,11 @@
 
 Usage: python3 src/build_excel.py   (run from the project folder)
 Output: outputs/price-comparison_SAMPLE.xlsx
-- 'Comparison' sheet: all 1,000 books, sorted by category then price,
-  with a live MIN formula per category row-block is NOT used (values
-  are snapshot values); instead the Summary sheet carries category
-  cheapest/average via formulas over the Comparison sheet? Simpler and
-  honest: Comparison holds snapshot values; Summary holds the KPI
-  formulas (COUNT, MIN, MAX, AVERAGE) over the Comparison range, so
-  the summary moves if a user edits a price.
+- 'Comparison' sheet: all books from the latest snapshot, sorted by
+  category then price, with snapshot values (not formulas).
+- 'Summary' sheet: overall KPIs as live formulas (COUNT, MIN, MAX,
+  AVERAGE, COUNTIF) over the Comparison sheet, so the summary moves
+  if a user edits a price.
 """
 import sqlite3
 from pathlib import Path

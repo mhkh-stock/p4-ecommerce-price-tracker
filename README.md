@@ -15,6 +15,16 @@
 > sheet is theirs. Scraping a site that forbids it, or a site behind a
 > login, is never part of this service.
 
+```mermaid
+flowchart LR
+    A[books.toscrape.com<br/>public catalogue] --> B[src/scrape_prices.py<br/>polite scrape, 0.25s delay]
+    B --> C[(SQLite<br/>price_history.db<br/>books + snapshots)]
+    C --> D[src/build_excel.py]
+    C --> E[src/diff_snapshots.py]
+    D --> F[price-comparison_SAMPLE.xlsx]
+    E --> G[price-changes.md]
+```
+
 ## Business question it answers
 
 > "What are my competitors charging, and what changed since last time?"
@@ -30,9 +40,10 @@ the next run shows price *changes*, not just today's prices.
 |---|---|
 | `outputs/price-comparison_SAMPLE.xlsx` | The deliverable: Comparison sheet (1,000 books, sorted by category then price) + Summary sheet with live formulas |
 | `data/processed/price_history.db` | SQLite: `books` (one row per product) + `price_snapshots` (one row per product per run date) |
-| `sql/schema.sql` | The price-history schema — re-runs add a snapshot, never overwrite |
+| `sql/schema.sql` | The price-history schema — a run on a new date adds a snapshot; history is never overwritten |
 | `src/scrape_prices.py` | The scraper: category pagination, polite delays, retry once |
 | `src/build_excel.py` | Builds the Excel sheet from the database |
+| `src/diff_snapshots.py` | Compares the two latest snapshots → `outputs/price-changes.md` (price moves, new/removed, stock changes) |
 | `src/checks.py` | Data-quality checks as code — 9 checks, all passing |
 | `outputs/price-report.md` | What the snapshot shows, in plain English |
 
@@ -73,8 +84,10 @@ URL was also opened live and returned HTTP 200.
 ## How to run it (under 5 steps)
 
 1. Open `outputs/price-comparison_SAMPLE.xlsx` — that is the deliverable.
-2. To re-scrape: `python3 src/scrape_prices.py` (adds a dated snapshot;
-   old snapshots stay, so changes are visible).
+2. To re-scrape: `python3 src/scrape_prices.py` (a run on a new date adds
+   a dated snapshot; re-running on the same date refreshes that day's
+   snapshot. After a second date exists, `python3 src/diff_snapshots.py`
+   writes `outputs/price-changes.md` — the actual change report).
 3. To rebuild the sheet: `python3 src/build_excel.py`.
 4. To reuse it for a real client: change the start URL and category
    parsing in `src/scrape_prices.py` to the client's competitor pages
@@ -93,6 +106,15 @@ URL was also opened live and returned HTTP 200.
 built for scraping practice). Book titles, prices and ratings belong
 to that demo catalogue. This sample is labelled SAMPLE because the
 tracker template — not the demo shop — is what a client buys.
+
+## Limits
+
+- One snapshot only (31 Oct 2026), so no price change is shown yet — the
+  change report appears after a second run on another day.
+- Prices are from a practice catalogue, not a real market — the range and
+  ratings describe the demo site, not a real competitor.
+- The scraper is written for this site's layout; a real client site needs
+  its category parsing adjusted (step 4 above).
 
 ## Repo standard note
 

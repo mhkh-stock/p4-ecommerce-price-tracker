@@ -25,7 +25,8 @@ scraped category by category in one polite run (0.25s between requests).
 
 ## What a client does with the next run
 
-Re-run the scraper, rebuild the sheet, and compare the two snapshots:
-new prices, items that went out of stock, and categories whose average
-moved. That diff — not a fresh list — is the report a pricing manager
-actually acts on.
+Re-run the scraper on another day, rebuild the sheet, then run
+`python3 src/diff_snapshots.py` — it writes `outputs/price-changes.md`:
+which prices moved (up/down), what is new or gone, what went out of
+stock, and which category averages moved. That diff — not a fresh
+list — is the report a pricing manager actually acts on.

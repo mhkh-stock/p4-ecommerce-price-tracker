@@ -1,7 +1,9 @@
 -- P4 price-history schema (SQLite).
 -- books = one row per product (ever seen). price_snapshots = one row per
--- product per snapshot date, so re-runs never overwrite history and
--- price changes are visible as snapshot-vs-snapshot differences.
+-- product per snapshot date. A re-run on a NEW date adds a snapshot and
+-- never overwrites history, so price changes are visible as
+-- snapshot-vs-snapshot differences; re-running on the SAME date
+-- refreshes that day's snapshot (INSERT OR REPLACE in the scraper).
 CREATE TABLE IF NOT EXISTS books (
     book_url TEXT PRIMARY KEY,
     title TEXT NOT NULL,

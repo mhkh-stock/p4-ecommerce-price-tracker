@@ -1,0 +1,10 @@
+# Python bytecode / caches
+__pycache__/
+*.pyc
+
+# OS files
+.DS_Store
+
+# NOTE: data/processed/price_history.db and outputs/price-comparison_SAMPLE.xlsx
+# are intentionally COMMITTED — they are the deliverable (the snapshot and
+# the sheet built from it), not build artefacts. Do not ignore them.
