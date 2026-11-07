@@ -1,7 +1,9 @@
 # P4 — E-commerce Price Tracker: Scrape Products & Prices → Price-Comparison Sheet
 
+**Repo:** https://github.com/mhkh-stock/p4-ecommerce-price-tracker
+
 **Source:** books.toscrape.com (a site built for scraping practice) ·
-**Snapshot:** 31 Oct 2026 · **Status: SAMPLE delivery on a public practice site**
+**Snapshots:** 31 Oct + 7 Nov 2026 (2 dates, 1,000 books each) · **Status: SAMPLE delivery on a public practice site**
 **Tools:** Python (stdlib urllib + html.parser — no extra installs) · SQLite · Excel
 **Deliverable:** `outputs/price-comparison_SAMPLE.xlsx` (1,000 books)
 **Database:** `data/processed/price_history.db` (books + dated price snapshots)
@@ -46,6 +48,7 @@ the next run shows price *changes*, not just today's prices.
 | `src/diff_snapshots.py` | Compares the two latest snapshots → `outputs/price-changes.md` (price moves, new/removed, stock changes) |
 | `src/checks.py` | Data-quality checks as code — 9 checks, all passing |
 | `outputs/price-report.md` | What the snapshot shows, in plain English |
+| `outputs/price-changes.md` | Change report 31 Oct → 7 Nov 2026 (0 moves — the practice catalogue's prices are static; the diff itself is verified working) |
 
 ## 3 key findings (from this snapshot)
 
@@ -69,14 +72,15 @@ the next run shows price *changes*, not just today's prices.
 |---|---|
 | Books tracked | 1,000 |
 | Categories | 50 |
-| Snapshot date | 2026-10-31 |
+| Snapshot dates | 2026-10-31, 2026-11-07 (1,000 rows each) |
+| Price moves 31 Oct → 7 Nov | 0 (practice catalogue prices are static) |
 | Cheapest price | £10.00 |
 | Most expensive | £59.99 |
 | Average price | £35.07 |
 | 5-star books | 196 |
 | In-stock books | 1,000 |
 
-Verification: `python3 src/checks.py` (9 checks pass) plus an
+Verification: `python3 src/checks.py` (10 checks pass) plus an
 independent reopen of the Excel file — 1,001 rows including the header,
 and its min/max/average match the database exactly. One sample product
 URL was also opened live and returned HTTP 200.
@@ -102,15 +106,18 @@ URL was also opened live and returned HTTP 200.
 
 ## Data source note
 
-**Public practice-site data, scraped 31 Oct 2026** (books.toscrape.com,
+**Public practice-site data, scraped 31 Oct + 7 Nov 2026** (books.toscrape.com,
 built for scraping practice). Book titles, prices and ratings belong
 to that demo catalogue. This sample is labelled SAMPLE because the
 tracker template — not the demo shop — is what a client buys.
 
 ## Limits
 
-- One snapshot only (31 Oct 2026), so no price change is shown yet — the
-  change report appears after a second run on another day.
+- Two snapshots now exist (31 Oct + 7 Nov 2026) and the change report
+  (`outputs/price-changes.md`) is generated: 0 price moves, 0 new/removed
+  books, 0 availability changes — the practice catalogue's prices are
+  static, so the honest result is "no change", and the diff pipeline
+  itself is verified end to end.
 - Prices are from a practice catalogue, not a real market — the range and
   ratings describe the demo site, not a real competitor.
 - The scraper is written for this site's layout; a real client site needs

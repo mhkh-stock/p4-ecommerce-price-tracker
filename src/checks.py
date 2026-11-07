@@ -19,10 +19,13 @@ def check(name, sql, expect):
 
 
 check("books = 1000", "SELECT COUNT(*) FROM books", 1000)
-check("snapshots = 1000 (one per book, one snapshot date)",
-      "SELECT COUNT(*) FROM price_snapshots", 1000)
-check("exactly one snapshot date",
-      "SELECT COUNT(DISTINCT snapshot_date) FROM price_snapshots", 1)
+check("snapshots = 2000 (1000 books x 2 snapshot dates)",
+      "SELECT COUNT(*) FROM price_snapshots", 2000)
+check("exactly two snapshot dates",
+      "SELECT COUNT(DISTINCT snapshot_date) FROM price_snapshots", 2)
+check("1000 rows per snapshot date",
+      "SELECT COUNT(*) FROM (SELECT snapshot_date FROM price_snapshots "
+      "GROUP BY snapshot_date HAVING COUNT(*) != 1000)", 0)
 check("categories = 50", "SELECT COUNT(DISTINCT category) FROM books", 50)
 check("no null/zero prices",
       "SELECT COUNT(*) FROM price_snapshots WHERE price_gbp IS NULL OR price_gbp <= 0", 0)
